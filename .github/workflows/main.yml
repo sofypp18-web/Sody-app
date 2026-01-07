@@ -1,26 +1,30 @@
 name: Build Android APK
-on: [push, pull_request]
+on: 
+  workflow_dispatch: # يتيح لك تشغيل البناء يدوياً بزر واحد
+  push:
+    branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      # خطوة إعادة تسمية ملف الإعدادات
+      # خطوة ذكية لتجهيز ملف الإعدادات مهما كان اسمه
       - name: Prepare Spec File
-        run: mv spec.txt buildozer.spec || true
+        run: |
+          if [ -f "spec.txt" ]; then mv spec.txt buildozer.spec; fi
+          if [ ! -f "buildozer.spec" ]; then echo "Error: spec file missing" && exit 1; fi
 
-      # تشغيل عملية البناء السحابي
       - name: Build with Buildozer
         uses: ArtemSerebrenninkov/buildozer-action@v1
         with:
           buildozer_version: master
           command: android debug
           
-      # رفع ملف الـ APK الناتج لتحميله
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
-          name: SofyTube-Final-APK
+          name: Sody-App-Final
           path: bin/*.apk
           
