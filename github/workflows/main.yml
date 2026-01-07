@@ -1,24 +1,30 @@
 name: Build Android APK
-on: [push, workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Setup Spec
+      - name: Prepare Spec
         run: |
-          cp spec.txt buildozer.spec || echo "already exists"
+          if [ -f "spec.txt" ]; then
+            mv spec.txt buildozer.spec
+          fi
 
       - name: Build with Buildozer
         uses: ArtemSerebrenninkov/buildozer-action@v1
         with:
           buildozer_version: master
           command: android debug
-          
+
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Sody-App-Final
           path: bin/*.apk
