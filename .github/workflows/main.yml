@@ -1,0 +1,26 @@
+name: Build Android APK
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # تحويل ملف الإعدادات ليكون جاهزاً للبناء
+      - name: Rename spec file
+        run: mv spec.txt buildozer.spec || true
+
+      # تشغيل محرك البناء (بيلدوزر)
+      - name: Build with Buildozer
+        uses: ArtemSerebrenninkov/buildozer-action@v1
+        with:
+          buildozer_version: master
+          command: android debug
+          
+      # استخراج ملف الـ APK النهائي
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: SofyTube-Package
+          path: bin/*.apk
+          
