@@ -6,21 +6,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # تحويل ملف الإعدادات ليكون جاهزاً للبناء
-      - name: Rename spec file
+      # خطوة إعادة تسمية ملف الإعدادات
+      - name: Prepare Spec File
         run: mv spec.txt buildozer.spec || true
 
-      # تشغيل محرك البناء (بيلدوزر)
+      # تشغيل عملية البناء السحابي
       - name: Build with Buildozer
         uses: ArtemSerebrenninkov/buildozer-action@v1
         with:
           buildozer_version: master
           command: android debug
           
-      # استخراج ملف الـ APK النهائي
+      # رفع ملف الـ APK الناتج لتحميله
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
-          name: SofyTube-Package
+          name: SofyTube-Final-APK
           path: bin/*.apk
           
