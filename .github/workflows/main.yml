@@ -1,6 +1,6 @@
 name: Build Android APK
 on: 
-  workflow_dispatch: # يتيح لك تشغيل البناء يدوياً بزر واحد
+  workflow_dispatch: # هذا السطر سيظهر لك الزر الأزرق السحري
   push:
     branches: [ main ]
 
@@ -10,11 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # خطوة ذكية لتجهيز ملف الإعدادات مهما كان اسمه
-      - name: Prepare Spec File
+      - name: Prepare Files
         run: |
-          if [ -f "spec.txt" ]; then mv spec.txt buildozer.spec; fi
-          if [ ! -f "buildozer.spec" ]; then echo "Error: spec file missing" && exit 1; fi
+          [ -f "spec.txt" ] && mv spec.txt buildozer.spec || echo "Spec already exists"
 
       - name: Build with Buildozer
         uses: ArtemSerebrenninkov/buildozer-action@v1
